@@ -1,0 +1,55 @@
+<div class="container-xl">
+    <!-- Profile Picture Section -->
+    <div class="row">
+
+        <!-- Center the heading -->
+        <div class="col-xl-12">
+
+
+            <h1 style="margin-left: 180px;"> Users</h1>
+            <div class="d-flex justify-content-center">
+                <!-- Center the table -->
+
+                <table class="table table-bordered  w-75">
+                    <!-- Set width and center -->
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Budget</th>
+                            <th colspan="3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (users.length === 0) { %>
+                            <tr>
+                                <td colspan="6" class="text-center">No users found</td>
+                            </tr>
+                            <% } else { %>
+                                <% users.forEach((item) => { %>
+                                    <tr>
+                                        <td>
+                                            <a href="/user_expense/<%= item._id %>" style="text-decoration: none; list-style: none;">
+                                                <%= item.first_name %>
+                                                    <%= item.last_name %>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <%= item.email %>
+                                        </td>
+                                        <td>
+                                            <%= item.budget %>
+                                        </td>
+                                        <td><a href="/user_analysis/<%= item._id %>" class="btn btn-primary">View</a></td>
+                                        <td><a href="/edit/<%= item._id %>" class="btn btn-secondary">Edit</a></td>
+                                        <td><a href="/delete/<%= item._id %>" class="btn btn-danger">Delete</a></td>
+                                    </tr>
+                                    <% }) %>
+                                        <% } %>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

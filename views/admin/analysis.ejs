@@ -1,0 +1,199 @@
+<div class="container-xl">
+    <div class="row">
+        <div class="col-xl-12" style="width: 724px;height: 400px; display: block;margin-left: 140px; ">
+            <div class="expenses-container">
+                <h2>Expenses Analysis (
+                    <%= userdata.first_name %>)</h2>
+                <select name="getdata" class="form-select w-25" id="select-data-range">
+                        <option value="" disabled selected>Check Data</option>
+                        <option value="last_4months">Last 4 Months</option>
+                        <option value="last_8months">Last 8 Months</option>
+                        <option value="last_12months">Last 12 Months</option>
+                    </select>
+            </div>
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+</script> -->
+<script>
+    // Retrieve the data passed from the server
+    const lineChartDates = JSON.parse('<%- JSON.stringify(lineChartDates) %>');
+    const lineChartPrices = JSON.parse('<%- JSON.stringify(lineChartPrices) %>');
+
+    // Combine dates and prices into a dataset
+    const lineChartData = lineChartDates.map((dateStr, index) => {
+        const [day, month, year] = dateStr.split('-');
+        const formattedDate = `${year}-${month}-${day}`;
+        return {
+            x: new Date(formattedDate),
+            y: lineChartPrices[index]
+        };
+    });
+
+    // Sort the data by date
+    lineChartData.sort((a, b) => a.x - b.x);
+
+    // Separate dates and prices for labels and data
+    const labels = lineChartData.map(data => {
+        const day = String(data.x.getDate()).padStart(2, '0');
+        const month = String(data.x.getMonth() + 1).padStart(2, '0');
+        const year = data.x.getFullYear();
+        return `${day}-${month}-${year}`;
+    });
+    const data = lineChartData.map(data => data.y);
+
+    // Get the canvas context
+    const ctx = document.getElementById('myChart').getContext('2d');
+
+    // Create a new line chart
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'User Expenses',
+                data: data,
+                borderColor: 'blue',
+                fill: false,
+                pointRadius: 5,
+                pointBackgroundColor: 'blue'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'day',
+                        tooltipFormat: 'DD-MM-YYYY',
+                        displayFormats: {
+                            day: 'DD-MM-YYYY'
+                        }
+                    },
+                    title: {
+                        display: false
+                    },
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        source: 'auto'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Price'
+                    },
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            }
+        }
+    });
+</script>
+
+
+<script>
+    // Event listener for the select dropdown
+    $('#select-data-range').change(function() {
+        const selectedValue = $(this).val();
+
+        if (selectedValue) {
+            $.ajax({
+                url: '/analysisBySort', // Your route here
+                method: 'GET',
+                data: {
+                    range: selectedValue,
+                    userId: '<%= userdata._id %>'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        const lineChartDates = response.lineChartDates;
+                        const lineChartPrices = response.lineChartPrices;
+
+                        // Update the chart with new data
+                        updateChart(lineChartDates, lineChartPrices);
+                    } else {
+                        // alert('Failed to retrieve data');
+                    }
+                },
+                error: function(err) {
+                    console.error('Error fetching data:', err);
+                }
+            });
+        }
+    });
+
+    function updateChart(dates, prices) {
+        const lineChartData = dates.map((dateStr, index) => {
+            const [day, month, year] = dateStr.split('-');
+            const formattedDate = `${year}-${month}-${day}`;
+            return {
+                x: new Date(formattedDate),
+                y: prices[index]
+            };
+        });
+
+        // Sort the data by date
+        lineChartData.sort((a, b) => a.x - b.x);
+
+        // Separate dates and prices for labels and data
+        const labels = lineChartData.map(data => {
+            const day = String(data.x.getDate()).padStart(2, '0');
+            const month = String(data.x.getMonth() + 1).padStart(2, '0');
+            const year = data.x.getFullYear();
+            return `${day}-${month}-${year}`;
+        });
+        const data = lineChartData.map(data => data.y);
+
+        // Update the chart
+        const ctx = document.getElementById('myChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'User Expenses',
+                    data: data,
+                    borderColor: 'blue',
+                    fill: false,
+                    pointRadius: 5,
+                    pointBackgroundColor: 'blue'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'day',
+                            tooltipFormat: 'DD-MM-YYYY',
+                            displayFormats: {
+                                day: 'DD-MM-YYYY'
+                            }
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Price'
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+</script>

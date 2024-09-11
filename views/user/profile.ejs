@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="au theme template">
+    <meta name="author" content="Hau Nguyen">
+    <meta name="keywords" content="au theme template">
+
+    <!-- Title Page-->
+    <title>
+        User Profile </title>
+
+    <!-- Fontfaces CSS-->
+    <link href="/public/css/font-face.css" rel="stylesheet" media="all">
+    <link href="/public/css/edit-profile.css" rel="stylesheet" media="all">
+    <link href="/public/vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
+    <link href="/public/vendor/font-awesome-5/css/fontawesome-all.min.css" rel="stylesheet" media="all">
+    <link href="/public/vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Bootstrap CSS-->
+    <link href="/public/vendor/bootstrap-4.1/bootstrap.min.css" rel="stylesheet" media="all">
+
+    <!-- Vendor CSS-->
+    <link href="/public/vendor/animsition/animsition.min.css" rel="stylesheet" media="all">
+    <link href="/public/vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet" media="all">
+    <link href="/public/vendor/wow/animate.css" rel="stylesheet" media="all">
+    <link href="/public/vendor/css-hamburgers/hamburgers.min.css" rel="stylesheet" media="all">
+    <link href="/public/vendor/slick/slick.css" rel="stylesheet" media="all">
+    <link href="/public/vendor/select2/select2.min.css" rel="stylesheet" media="all">
+    <link href="/public/vendor/perfect-scrollbar/perfect-scrollbar.css" rel="stylesheet" media="all">
+
+    <!-- Main CSS-->
+    <link href="/public/css/theme.css" rel="stylesheet" media="all">
+    <link href="/public/css/style.css" rel="stylesheet" media="all">
+    <link href="/public/css/styles.css" rel="stylesheet" media="all">
+    <link href="/public/css/styless.css" rel="stylesheet" media="all">
+
+    <style>
+        /* Header styles */
+    </style>
+</head>
+
+<body class="animsition">
+    <div class="page-wrapper">
+        <header class="header-desktop">
+            <div class="section__content section__content--p30">
+                <div class="container-fluid">
+                    <div class="header-wrap d-flex justify-content-between align-items-center">
+                        <div class="logo">
+                            <a href="/">
+                                <img src="/public/images/icon/logo.png" alt="Cool Admin" />
+                            </a>
+
+                        </div>
+                        <!-- Navigation Menu -->
+                        <nav class="nav-header">
+
+                            <ul class="nav">
+
+                                <li class="nav-item">
+                                    <a href="/" class="nav-link">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/about" class="nav-link">About</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/contact" class="nav-link">Contact Us</a>
+                                </li>
+                            </ul>
+                        </nav>
+
+                        <!-- User Actions and Notifications -->
+                        <% if (user) { %>
+                            <div class="header-button d-flex align-items-center">
+
+                                <!-- Notifications -->
+                                <div class="noti-wrap me-4">
+                                    <!-- Messages Notification -->
+                                    <div class="noti__item js-item-menu me-3">
+                                        <i class="zmdi zmdi-comment-more"></i>
+                                        <span class="quantity">1</span>
+                                        <div class="mess-dropdown js-dropdown">
+                                            <div class="mess__title">
+                                                <p>You have 2 new messages</p>
+                                            </div>
+                                            <!-- Message Items -->
+                                            <div class="mess__item">
+                                                <div class="image img-cir img-40">
+                                                    <img src="/public/images/icon/avatar-06.jpg" alt="Michelle Moreno" />
+                                                </div>
+                                                <div class="content">
+                                                    <h6>Michelle Moreno</h6>
+                                                    <p>Have sent a photo</p>
+                                                    <span class="time">3 min ago</span>
+                                                </div>
+                                            </div>
+                                            <div class="mess__item">
+                                                <div class="image img-cir img-40">
+                                                    <img src="/public/images/icon/avatar-04.jpg" alt="Diane Myers" />
+                                                </div>
+                                                <div class="content">
+                                                    <h6>Diane Myers</h6>
+                                                    <p>You are now connected on message</p>
+                                                    <span class="time">Yesterday</span>
+                                                </div>
+                                            </div>
+                                            <div class="mess__footer">
+                                                <a href="#">View all messages</a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Emails Notification -->
+                                    <div class="noti__item js-item-menu me-3">
+                                        <i class="zmdi zmdi-email"></i>
+                                        <span class="quantity">1</span>
+                                        <div class="email-dropdown js-dropdown">
+                                            <div class="email__title">
+                                                <p>You have 3 New Emails</p>
+                                            </div>
+                                            <!-- Email Items -->
+                                            <div class="email__item">
+                                                <div class="image img-cir img-40">
+                                                    <img src="/public/images/icon/avatar-06.jpg" alt="Cynthia Harvey" />
+                                                </div>
+                                                <div class="content">
+                                                    <p>Meeting about new dashboard...</p>
+                                                    <span>Cynthia Harvey, 3 min ago</span>
+                                                </div>
+                                            </div>
+                                            <div class="email__item">
+                                                <div class="image img-cir img-40">
+                                                    <img src="/public/images/icon/avatar-05.jpg" alt="Cynthia Harvey" />
+                                                </div>
+                                                <div class="content">
+                                                    <p>Meeting about new dashboard...</p>
+                                                    <span>Cynthia Harvey, Yesterday</span>
+                                                </div>
+                                            </div>
+                                            <div class="email__item">
+                                                <div class="image img-cir img-40">
+                                                    <img src="/public/images/icon/avatar-04.jpg" alt="Cynthia Harvey" />
+                                                </div>
+                                                <div class="content">
+                                                    <p>Meeting about new dashboard...</p>
+                                                    <span>Cynthia Harvey, April 12, 2018</span>
+                                                </div>
+                                            </div>
+                                            <div class="email__footer">
+                                                <a href="#">See all emails</a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- General Notifications -->
+                                    <div class="noti__item js-item-menu">
+                                        <i class="zmdi zmdi-notifications"></i>
+                                        <span class="quantity">3</span>
+                                        <div class="notifi-dropdown js-dropdown">
+                                            <div class="notifi__title">
+                                                <p>You have 3 Notifications</p>
+                                            </div>
+                                            <!-- Notification Items -->
+                                            <div class="notifi__item">
+                                                <div class="bg-c1 img-cir img-40">
+                                                    <i class="zmdi zmdi-email-open"></i>
+                                                </div>
+                                                <div class="content">
+                                                    <p>You got a email notification</p>
+                                                    <span class="date">April 12, 2018 06:50</span>
+                                                </div>
+                                            </div>
+                                            <div class="notifi__item">
+                                                <div class="bg-c2 img-cir img-40">
+                                                    <i class="zmdi zmdi-account-box"></i>
+                                                </div>
+                                                <div class="content">
+                                                    <p>Your account has been blocked</p>
+                                                    <span class="date">April 12, 2018 06:50</span>
+                                                </div>
+                                            </div>
+                                            <div class="notifi__item">
+                                                <div class="bg-c3 img-cir img-40">
+                                                    <i class="zmdi zmdi-file-text"></i>
+                                                </div>
+                                                <div class="content">
+                                                    <p>You got a new file</p>
+                                                    <span class="date">April 12, 2018 06:50</span>
+                                                </div>
+                                            </div>
+                                            <div class="notifi__footer">
+                                                <a href="#">All notifications</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Account Dropdown -->
+                                <div class="account-wrap">
+                                    <div class="account-item clearfix js-item-menu">
+                                        <div class="image">
+                                            <img src="media/<%= user.image %>" alt="<%= user.first_name %>" style="width: 35px; height: 35px; padding: 0px; " />
+                                        </div>
+                                        <div class="content">
+                                            <a class="js-acc-btn" href="">
+                                                <%= user.first_name %>
+                                            </a>
+                                        </div>
+                                        <div class="account-dropdown js-dropdown">
+                                            <div class="info clearfix">
+                                                <div class="image">
+                                                    <a href="/profile">
+                                                        <img src="media/<%= user.image %>" alt="<%= user.first_name %>" />
+                                                    </a>
+                                                </div>
+                                                <div class="content">
+                                                    <h5 class="name">
+                                                        <a href="#">
+                                                            <%= user.first_name %>
+                                                        </a>
+                                                    </h5>
+                                                    <span class="email"><%= user.email %></span>
+                                                </div>
+                                            </div>
+                                            <div class="account-dropdown__body">
+                                                <div class="account-dropdown__item">
+                                                    <a href="">
+                                                        <i class="zmdi zmdi-account"></i>Account</a>
+                                                </div>
+
+
+                                            </div>
+                                            <div class="account-dropdown__footer">
+                                                <a href="/logout">
+                                                    <i class="zmdi zmdi-power"></i>Logout</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <% } else { %>
+                                <div class="user-actions d-flex">
+                                    <a href="/login" class="nav-link" style="text-decoration: none; list-style: none; color: #333; font-weight: 500;">Login</a>
+                                    <a href="/register" class="nav-link" style="text-decoration: none; list-style: none; color: #333; font-weight: 500;">Register</a>
+                                </div>
+                                <% } %>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- END PAGE CONTAINER-->
+
+
+        <div class="main-content" style="overflow-y: auto;">
+            <div class="container-xl">
+                <!-- Profile Picture Section -->
+                <div class="row">
+                    <div class="col-xl-4 m-0">
+                        <div class="card mb-4 mb-xl-0">
+                            <div class="card-header">Profile Picture</div>
+                            <div class="card-body text-center position-relative">
+                                <!-- Profile picture image -->
+                                <img class="img-account-profile rounded-circle" src="media/<%= user.image %>" alt="Profile Picture">
+
+                                <!-- Icon or badge for changing profile picture -->
+
+                                <button class="btn btn-primary position-absolute top-0 end-0 m-2" data-bs-toggle="modal" data-bs-target="#changeProfilePictureModal">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <!-- Profile picture help block -->
+                                <p class="">
+                                    <b><%= user.first_name %> <%= user.last_name %></b>
+                                </p>
+                                <div class="text-start mt-4">
+                                    <!-- Email -->
+                                    <p><i class="fas fa-envelope"></i>
+                                        <%= user.email %>
+                                    </p>
+
+                                    <!-- Phone Number -->
+                                    <p><i class="fas fa-phone"></i>
+                                        <%= user.personalDetails ? user.personalDetails.phone_no : '' %>
+                                    </p>
+
+                                    <!-- City -->
+                                    <p><i class="fas fa-map-marker-alt"></i>
+                                        <%= user.personalDetails ? user.personalDetails.city : '' %>
+                                    </p>
+
+                                    <!-- Website -->
+                                    <p><i class="fas fa-globe"></i>
+                                        <% if (user.personalDetails && user.personalDetails.website) { %>
+                                            <a href="<%= user.personalDetails.website %>" target="_blank">
+                                                <%= user.personalDetails.website %>
+                                            </a>
+                                            <% }  %>
+                                    </p>
+                                </div>
+                                <!-- Modal for changing profile picture -->
+                                <div class="modal fade" id="changeProfilePictureModal" tabindex="-1" aria-labelledby="changeProfilePictureModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="changeProfilePictureModalLabel">Change Profile Picture</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form action="/update_profile_pic" method="POST" enctype="multipart/form-data">
+                                                    <div class="mb-3">
+                                                        <label for="profilePicture" class="form-label">Select New Profile Picture</label>
+                                                        <input class="form-control" type="file" id="profilePicture" name="image" required>
+                                                        <input class="form-control" type="hidden" value="<%= user._id%>" name="user_id">
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary">Upload</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Profile picture card-->
+
+                    </div>
+
+                    <!-- Account details section -->
+                    <div class="col-xl-8">
+                        <!-- Account details card-->
+                        <div class="card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                Personal Details
+                                <!-- Edit Profile Icon -->
+                                <a href="/edit-profile" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-edit"></i> Edit Profile
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <!-- Form Group (About Me)-->
+                                <div class="mb-3">
+                                    <label class="small mb-1" for="inputAbout">About Me</label>
+                                    <p class="form-control">
+                                        <%= user.personalDetails ? user.personalDetails.about : '' %>
+                                    </p>
+                                </div>
+
+                                <!-- Form Rows for Personal Details -->
+                                <div class="row gx-3 mb-3">
+                                    <div class="col-md-6">
+                                        <label class="small mb-1" for="inputFirstName">Full Name:</label>
+                                        <input class="form-control" type="text" value="<%= user.first_name %> <%= user.last_name %>" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="small mb-1" for="inputFatherName">Father Name:</label>
+                                        <input class="form-control" type="text" value="<%= user.personalDetails ? user.personalDetails.father_name : '' %>" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="row gx-3 mb-3">
+                                    <div class="col-md-6">
+                                        <label class="small mb-1" for="inputFirstName">First Name:</label>
+                                        <input class="form-control" type="text" value="<%= user.first_name %>" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="small mb-1" for="inputLastName">Last Name:</label>
+                                        <input class="form-control" type="text" value="<%= user.last_name %>" readonly>
+                                    </div>
+                                </div>
+
+                                <!-- Other Personal Details -->
+                                <div class="row gx-3 mb-3">
+                                    <div class="col-md-6">
+                                        <label class="small mb-1" for="inputEducation">Education:</label>
+                                        <input class="form-control" type="text" value="<%= user.personalDetails ? user.personalDetails.education : '' %>" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="small mb-1" for="inputPosition">Position:</label>
+                                        <input class="form-control" type="text" value="<%= user.personalDetails ? user.personalDetails.position : '' %>" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="row gx-3 mb-3">
+                                    <div class="col-md-6">
+                                        <label class="small mb-1" for="inputCity">City:</label>
+                                        <input class="form-control" type="text" value="<%= user.personalDetails ? user.personalDetails.city : '' %>" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="small mb-1" for="inputZipCode">Zip Code:</label>
+                                        <input class="form-control" type="number" value="<%= user.personalDetails ? user.personalDetails.zip_code : '' %>" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="small mb-1" for="inputAddress">Address:</label>
+                                    <input class="form-control" type="text" value="<%= user.personalDetails ? user.personalDetails.address : '' %>" readonly>
+                                </div>
+
+                                <div class="row gx-3 mb-3">
+                                    <div class="col-md-6">
+                                        <label class="small mb-1" for="inputPhone">Phone number:</label>
+                                        <input class="form-control" type="tel" value="<%= user.personalDetails ? user.personalDetails.phone_no : '' %>" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="small mb-1" for="inputBirthday">Birthday:</label>
+                                        <input class="form-control" type="date" value="<%= user.personalDetails && user.personalDetails.dob ? user.personalDetails.dob.toISOString().split('T')[0] : '' %>" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="small mb-1" for="inputWebsite">Website:</label>
+                                    <input class="form-control" type="url" value="<%= user.personalDetails ? user.personalDetails.website : '' %>" readonly>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Jquery JS-->
+    <script src="/public/vendor/jquery-3.2.1.min.js"></script>
+    <!-- Bootstrap JS-->
+    <script src="/public/vendor/bootstrap-4.1/popper.min.js"></script>
+    <script src="/public/vendor/bootstrap-4.1/bootstrap.min.js"></script>
+    <!-- Vendor JS -->
+    <script src="/public/vendor/slick/slick.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <script src="/public/vendor/wow/wow.min.js"></script>
+    <script src="/public/vendor/animsition/animsition.min.js"></script>
+    <script src="/public/vendor/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <script src="/public/vendor/counter-up/jquery.waypoints.min.js"></script>
+    <script src="/public/vendor/counter-up/jquery.counterup.min.js"></script>
+    <script src="/public/vendor/circle-progress/circle-progress.min.js"></script>
+    <script src="/public/vendor/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="/public/vendor/chartjs/Chart.bundle.min.js"></script>
+    <script src="/public/vendor/select2/select2.min.js"></script>
+
+    <!-- Main JS-->
+    <script src="/public/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var myModal = new bootstrap.Modal(document.getElementById('changeProfilePictureModal'), {
+                keyboard: false
+            });
+        });
+    </script>
+</body>
+
+</html>
+<!-- end document -->

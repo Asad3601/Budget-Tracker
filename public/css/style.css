@@ -1,0 +1,117 @@
+/* Ensure the page wrapper takes full width */
+
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    /* Full viewport height */
+}
+
+
+/* Adjust header styles */
+
+.header-desktop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: #fff;
+    /* Or any color you prefer */
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* Adjust sidebar styles */
+
+.menu-sidebar {
+    position: sticky;
+    padding: 20px;
+    top: 60px;
+    /* Height of your header */
+    left: 0;
+    width: 250px;
+    /* Adjust based on your sidebar width */
+    height: calc(100vh - 60px);
+    /* Full height minus header height */
+    background-color: #f8f9fa;
+    /* Or any color you prefer */
+    /* z-index: 999; */
+    /* Ensure it’s behind the header */
+}
+
+.main-content {
+    overflow-y: auto;
+}
+
+
+/* Adjust the page container styles */
+
+.header-desktop .logo img {
+    height: 52px;
+    margin-left: 45px;
+    /* Adjust logo size */
+}
+
+
+/* Sidebar styles */
+
+
+/* Adjust content to avoid overlap with sidebar */
+
+.header-container h1 {
+    margin: 0;
+}
+
+.header-container .btn {
+    margin-left: 660px;
+    /* Space between heading and button */
+}
+
+.page-container {
+    margin-top: -520px;
+    margin-left: -100px;
+    overflow-y: auto;
+}
+
+.nav-header {
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+    /* Center align nav items horizontally */
+}
+
+.nav-header .nav {
+    display: flex;
+    align-items: center;
+    /* Center align nav items vertically */
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-header .nav-item {
+    margin: 0 15px;
+    /* Add space between nav items */
+}
+
+.nav-header .nav-link {
+    text-decoration: none;
+    color: #333;
+    /* Adjust text color */
+    font-weight: 500;
+}
+
+.navbar-sidebar ul li a {
+    text-decoration: none;
+    color: #333;
+    /* Adjust text color */
+    font-weight: 500;
+}
+
+.navbar-sidebar ul li {
+    align-items: center;
+}

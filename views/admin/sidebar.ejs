@@ -1,0 +1,40 @@
+<aside class="menu-sidebar d-none d-lg-block" style="overflow: unset;">
+    <div class="menu-sidebar__content js-scrollbar1">
+        <nav class="navbar-sidebar" style="margin-top: 40px; margin-left: 10px;">
+            <% if(user && user.role == 'admin'){ %>
+                <ul class="list-unstyled navbar__list">
+                    <li class=" has-sub">
+                        <a class="js-arrow" href="/">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                            <hr>
+                        </a>
+                    </li>
+
+                    <li class="has-sub">
+                        <a class="js-arrow" href="/register">
+                            <i class="fas fa-plus-circle"></i> Add User
+                            <hr>
+                        </a>
+
+                    </li>
+                    <li class="has-sub">
+                        <a class="js-arrow" href="/users">
+                            <i class="fas fa-users"></i> Users
+                            <hr>
+                        </a>
+
+                    </li>
+
+                    <li class="has-sub">
+                        <a class="js-arrow" href="/logout">
+                            <i class="fas fa-power-off"></i> Logout
+                        </a>
+
+                    </li>
+
+                </ul>
+                <%}%>
+
+        </nav>
+    </div>
+</aside>

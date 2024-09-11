@@ -1,0 +1,38 @@
+<aside class="menu-sidebar d-none d-lg-block" style="overflow: unset;">
+
+    <div class="menu-sidebar__content js-scrollbar1">
+        <nav class="navbar-sidebar" style="margin-top: 40px; margin-left: 10px;">
+            <% if(user){ %>
+                <ul class="list-unstyled navbar__list">
+                    <li class="has-sub">
+                        <a class="js-arrow" href="/profile">
+                            <i class="fas fa-user"></i> Profile
+                            <hr>
+                        </a>
+                    </li>
+                    <li class="has-sub">
+                        <a class="js-arrow" href="/user_expenses">
+                            <i class="fas fa-money-bill-alt"></i> Expenses
+                            <hr>
+                        </a>
+                    </li>
+                    <li class="has-sub">
+                        <a class="js-arrow" href="/analysis">
+                            <i class="fas fa-chart-line"></i> Analysis
+                            <hr>
+                        </a>
+                    </li>
+                    <li class="has-sub">
+                        <a class="js-arrow" href="/logout">
+                            <i class="fas fa-power-off"></i> Logout
+                            <hr>
+                        </a>
+
+                    </li>
+
+                </ul>
+                <%}%>
+
+        </nav>
+    </div>
+</aside>

@@ -1,0 +1,177 @@
+<div class="container-xl">
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="header-container" style="margin-left: 130px;">
+                <h3>Users Expenses (
+                    <%= userData.first_name %>)</h3>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-3 w-75" style="margin-left: 130px;">
+                <!-- Date Filter -->
+
+                <select name="sort" class="form-select me-2">
+                        <option value="" disabled selected>Sort by</option>
+                        <option value="date_asc">Date: Highest to Lowest</option>
+                        <option value="date_desc">Date: Lowest to Highest</option>
+                        <option value="price_asc">Price: Highest to Lowest</option>
+                        <option value="price_desc">Price: Lowest to Highest</option>
+                    </select>
+                <input type="date" name="date" class="form-control me-1" placeholder="Select date">
+                <input type="text" name="search" class="form-control me-1" placeholder="Search...">
+
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="changeProfilePictureModal" tabindex="-1" aria-labelledby="changeProfilePictureModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="adduserexpense">Add User Expense</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/add_expenseByAdmin" method="POST">
+                                <div class="mb-3">
+                                    <label for="title" class="form-label">Expense Title:</label>
+                                    <input class="form-control" id="title" type="text" name="title" required>
+                                    <label for="price" class="form-label">Expense Price:</label>
+                                    <input class="form-control" id="price" type="number" name="price" required>
+                                    <label for="date" class="form-label">Date:</label>
+                                    <input class="form-control" type="date" name="date" id="date" required>
+                                    <input class="form-control" id="user_id" type="hidden" value="<%= userData._id %>" name="user_id">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Add</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expense Table -->
+            <div class="d-flex justify-content-center">
+                <table class="table table-bordered w-75">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Expense Title</th>
+                            <th>Expense Price</th>
+                            <th>Date</th>
+                            <th>Expense of Total Budget</th>
+                            <th colspan="2">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% user_expenses.forEach(item => { %>
+                            <tr>
+                                <td>
+                                    <%= item.title %>
+                                </td>
+                                <td>
+                                    <%= item.date %>
+                                </td>
+
+                                <!-- Ensure formattedDate is correctly passed -->
+                                <td>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: <%= item.percentage %>%;" aria-valuenow="<%= item.percentage %>" aria-valuemin="0" aria-valuemax="100">
+                                            <%= item.percentage %>%
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><a href="/expense_delete/<%= item._id %>" class="btn btn-danger">Delete</a></td>
+                                <td><a href="edit/<%= item._id %>" class="btn btn-primary">Edit</a></td>
+                            </tr>
+                            <% }) %>
+                    </tbody>
+
+                </table>
+            </div>
+            <button id="addExpenseBtn" class="btn btn-primary" data-bs-toggle="modal" style="margin-left: 130px;" data-bs-target="#changeProfilePictureModal" <% if (isOverBudget) { %> disabled <% } %>>
+                Add Expense
+            </button>
+            <!-- Total Budget and Expenses Summary -->
+            <div class="d-flex justify-content-center mt-4">
+                <div class="alert <%= isOverBudget ? 'alert-danger' : 'alert-success' %>">
+                    <h4 class="alert-heading">Budget Summary</h4>
+                    <p>Total Budget:
+                        <%= budget %>
+                    </p>
+                    <p>Total Expenses:
+                        <%= totalExpenses %>
+                    </p>
+                    <% if (isOverBudget) { %>
+                        <p><strong>Warning:</strong> Total expenses exceed the budget!</p>
+                        <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        function fetchExpenses() {
+            const sort = $('select[name="sort"]').val();
+            const date = $('input[name="date"]').val();
+            const search = $('input[name="search"]').val();
+
+            $.ajax({
+                url: '/get_user_expense_by_admin/<%= userData._id %>',
+                method: 'GET',
+                data: {
+                    sort: sort,
+                    date: date,
+                    search: search
+                },
+                success: function(response) {
+                    // Update the table with the response
+                    const tbody = $('table tbody');
+                    tbody.empty(); // Clear the existing rows
+
+                    if (response.expenses.length === 0) {
+                        tbody.append('<tr><td colspan="6" class="text-center">No expenses found</td></tr>');
+                    } else {
+                        response.expenses.forEach(expense => {
+                            tbody.append(`
+                                <tr>
+                                    <td>${expense.title}</td>
+                                    <td>${expense.price}</td>
+                                    <td>${expense.date}</td>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: ${expense.percentage}%" aria-valuenow="${expense.percentage}" aria-valuemin="0" aria-valuemax="100">
+                                                ${expense.percentage}%
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><a href="/expense_delete/${expense._id}" class="btn btn-danger">Delete</a></td>
+                                    <td><a href="edit/${expense._id}" class="btn btn-primary">Edit</a></td>
+                                </tr>
+                            `);
+                        });
+                    }
+
+                    // Update the budget summary
+                    $('.alert').html(`
+                        <h4 class="alert-heading">Budget Summary</h4>
+                        <p>Total Budget: ${response.budget}</p>
+                        <p>Total Expenses: ${response.totalExpenses}</p>
+                        ${response.isOverBudget ? '<p><strong>Warning:</strong> Total expenses exceed the budget!</p>' : ''}
+                    `);
+
+                    // Handle disabled state of "Add Expense" button
+                    $('#addExpenseBtn').prop('disabled', response.isOverBudget);
+                },
+                error: function(xhr) {
+                    console.error('Error fetching expenses:', xhr);
+                }
+            });
+        }
+
+        // Bind change events to trigger AJAX request
+        $('select[name="sort"]').change(fetchExpenses);
+        $('input[name="date"]').change(fetchExpenses);
+        $('input[name="search"]').keyup(fetchExpenses);
+
+        // Initial fetch to populate table on page load
+        fetchExpenses();
+    });
+</script>
