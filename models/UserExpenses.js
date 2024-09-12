@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const moment = require('moment');
 const { Schema } = mongoose;
 
 // Define the UserExpenses schema
@@ -20,20 +21,16 @@ const userExpensesSchema = new Schema({
         }
     },
     date: {
-        type: String,
+        type: Date, // Store the date as a Date type
         required: true,
-
-        validate: {
-            validator: function(value) {
-                return /^\d{2}-\d{2}-\d{4}$/.test(value);
-            },
-            message: props => `${props.value} is not a valid date format.`
+        set: function(value) {
+            // Convert the input date to UTC, ensuring only the date part is saved
+            const date = new Date(value);
+            return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
         }
     },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 
-}, {
-    timestamps: true
 });
 
 // Create the model from the schema

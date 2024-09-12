@@ -5,6 +5,7 @@ const UserExpenses = require('../models/UserExpenses');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const multer = require('multer');
+const moment = require('moment');
 const otpgenerator = require('otp-generator');
 const { body, validationResult } = require('express-validator');
 
@@ -328,10 +329,6 @@ exports.AddUserExpense = async(req, res) => {
     try {
         const { title, price, date, user_id } = req.body;
 
-        // Convert date from YYYY-MM-DD to DD-MM-YYYY
-        const [year, month, day] = date.split('-');
-        const formattedDate = `${day}-${month}-${year}`;
-
         // Find the user and update their budget
         const user = await UserModel.findById(user_id);
         if (!user) {
@@ -347,7 +344,7 @@ exports.AddUserExpense = async(req, res) => {
         // Check if an expense already exists for the user on the given date
         const existingExpense = await UserExpenses.findOne({
             user: user_id,
-            date: formattedDate
+            date: new Date(date)
         });
 
         if (existingExpense) {
@@ -361,7 +358,7 @@ exports.AddUserExpense = async(req, res) => {
         const user_expense = new UserExpenses({
             title,
             price,
-            date: formattedDate, // Save the formatted date
+            date: new Date(date), // Save the formatted date
             user: user_id
         });
 
@@ -392,7 +389,8 @@ exports.UserExpenses = async(req, res) => {
         // Prepare expenses with percentage used for each expense
         let expensesWithPercentage = user_expenses.map(expense => ({
             ...expense._doc,
-            percentage: ((expense.price / user.budget) * 100).toFixed(2)
+            percentage: ((expense.price / user.budget) * 100).toFixed(2),
+            formattedDate: moment(expense.date).format('DD MMM YYYY')
         }));
 
         // Controller
@@ -425,10 +423,7 @@ exports.getUserExpenses = async(req, res) => {
 
         // Add date filter if provided
         if (date) {
-            const [year, month, day] = date.split('-');
-            const formattedDate = `${day}-${month}-${year}`; // Convert to dd-mm-yyyy format
-            // Log for debugging
-            query.date = formattedDate; // Use formatted date directly
+            query.date = new Date(date); // Use formatted date directly
         }
 
         // Add search filter if provided
@@ -451,19 +446,16 @@ exports.getUserExpenses = async(req, res) => {
         let user_expenses = await UserExpenses.find(query);
 
         // Convert DD-MM-YYYY to sortable format YYYY-MM-DD
-        function convertToSortableDate(dateStr) {
-            const [day, month, year] = dateStr.split('-');
-            return `${year}-${month}-${day}`; // YYYY-MM-DD
-        }
+
 
         // Apply sorting
         if (sort) {
             switch (sort) {
                 case 'date_asc':
-                    user_expenses.sort((a, b) => convertToSortableDate(b.date).localeCompare(convertToSortableDate(a.date)));
+                    user_expenses = user_expenses.sort((a, b) => new Date(b.date) - new Date(a.date)); // Oldest to newest
                     break;
                 case 'date_desc':
-                    user_expenses.sort((a, b) => convertToSortableDate(a.date).localeCompare(convertToSortableDate(b.date)));
+                    user_expenses = user_expenses.sort((a, b) => new Date(a.date) - new Date(b.date)); // Newest to oldest
                     break;
                 case 'price_asc':
                     user_expenses.sort((a, b) => b.price - a.price); // Lowest to highest
@@ -480,7 +472,8 @@ exports.getUserExpenses = async(req, res) => {
         // Prepare expenses with percentage used for each expense
         let expensesWithPercentage = user_expenses.map(expense => ({
             ...expense._doc,
-            percentage: ((expense.price / user.budget) * 100).toFixed(2)
+            percentage: ((expense.price / user.budget) * 100).toFixed(2),
+            formattedDate: moment(expense.date).format('DD MMM YYYY')
         }));
 
         // Respond with JSON data
@@ -521,8 +514,7 @@ exports.UserAnalysis = async(req, res) => {
 
         user_expenses.forEach(expense => {
             try {
-                const formattedDate = expense.date;
-                dates.push(formattedDate);
+                dates.push(expense.date);
                 prices.push(expense.price);
             } catch (error) {
                 console.error(`Error converting date: ${expense.date}, error`);
@@ -544,7 +536,44 @@ exports.UserAnalysis = async(req, res) => {
     }
 };
 
+exports.AnalysisBySorting = async(req, res) => {
+    try {
+        const { range, userId } = req.query;
+        let months = 4; // Default is last 4 months
 
+        // Set the months based on the selected range
+        if (range === 'last_8months') months = 8;
+        else if (range === 'last_12months') months = 12;
+
+        // Fetch all user expenses
+        const userExpenses = await UserExpenses.find({ user: userId }).sort({ date: 1 }); // Sort in ascending order
+        if (!userExpenses.length) {
+            return res.json({ success: false, message: 'No expense records found' });
+        }
+
+        // Get the latest expense date as the `endDate`
+        const latestExpense = userExpenses[userExpenses.length - 1]; // Last record in the sorted array
+        const endDate = moment(latestExpense.date).endOf('day').toDate(); // Use the end of the day for the latest d
+        console.log(endDate);
+        // Calculate `startDate` by subtracting the number of months
+        const startDate = moment(endDate).subtract(months, 'months').startOf('month').toDate();
+        console.log(startDate);
+        // Fetch expenses between `startDate` and `endDate`
+        const expenses = await UserExpenses.find({
+            user: userId,
+            date: { $gte: startDate, $lte: endDate }
+        }).sort({ date: 1 }); // Sort by date ascending
+        // Extract dates and prices for the chart
+        const lineChartDates = expenses.map(exp => moment(exp.date).format('DD MMM YYYY')); // Format date as "22 Jun 2024"
+        const lineChartPrices = expenses.map(exp => exp.price);
+
+        // Send response
+        res.json({ success: true, lineChartDates, lineChartPrices });
+    } catch (error) {
+        console.error('Error in UserAnalysisBySorting:', error);
+        res.json({ success: false, message: 'Failed to retrieve expenses data' });
+    }
+};
 
 exports.UserExpenseDeleteById = async(req, res) => {
     const id = req.params.id;

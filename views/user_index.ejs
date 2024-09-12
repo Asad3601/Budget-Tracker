@@ -23,7 +23,7 @@
 
     <!-- Bootstrap CSS-->
     <link href="/public/vendor/bootstrap-4.1/bootstrap.min.css" rel="stylesheet" media="all">
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Vendor CSS-->
     <link href="/public/vendor/animsition/animsition.min.css" rel="stylesheet" media="all">
     <link href="/public/vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet" media="all">
@@ -42,19 +42,17 @@
     <style>
         /* Header styles */
         
-        .header-container h1 {
-            margin: 0;
+        .expenses-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            /* Align items vertically in the center */
+            margin-bottom: 10px;
+            /* Optional: Add some space below the container */
         }
         
-        #addExpenseBtn {
-            margin-left: 130px;
-            /* Space between heading and button */
-        }
-        
-        .page-container {
-            margin-top: -520px;
-            margin-left: -100px;
-            overflow-y: auto;
+        .form-select {
+            width: 25%;
         }
     </style>
 </head>

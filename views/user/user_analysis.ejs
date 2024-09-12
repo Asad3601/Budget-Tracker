@@ -1,7 +1,15 @@
 <div class="container-xl">
     <div class="row">
         <div class="col-xl-12" style="width: 724px;height: 400px; display: block;margin-left: 140px; ">
-            <h2>Expenses Analysis</h2>
+            <div class="expenses-container">
+                <h2>Expenses Analysis</h2>
+                <select name="getdata" class="form-select w-25" id="select-data-range">
+                        <option value="" disabled selected>Check Data</option>
+                        <option value="last_4months">Last 4 Months</option>
+                        <option value="last_8months">Last 8 Months</option>
+                        <option value="last_12months">Last 12 Months</option>
+                    </select>
+            </div>
             <canvas id="myChart"></canvas>
         </div>
     </div>
@@ -17,23 +25,20 @@
 
     // Combine dates and prices into a dataset
     const lineChartData = lineChartDates.map((dateStr, index) => {
-        const [day, month, year] = dateStr.split('-');
-        const formattedDate = `${year}-${month}-${day}`;
         return {
-            x: new Date(formattedDate),
+            x: new Date(dateStr),
             y: lineChartPrices[index]
         };
     });
-
-    // Sort the data by date
     lineChartData.sort((a, b) => a.x - b.x);
 
     // Separate dates and prices for labels and data
     const labels = lineChartData.map(data => {
-        const day = String(data.x.getDate()).padStart(2, '0');
-        const month = String(data.x.getMonth() + 1).padStart(2, '0');
-        const year = data.x.getFullYear();
-        return `${day}-${month}-${year}`;
+        return data.x.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'short' // Short month name (e.g., "Jun")
+                // year: 'numeric'
+        });
     });
     const data = lineChartData.map(data => data.y);
 
@@ -60,11 +65,8 @@
                 x: {
                     type: 'time',
                     time: {
-                        unit: 'day',
-                        tooltipFormat: 'DD-MM-YYYY',
-                        displayFormats: {
-                            day: 'DD-MM-YYYY'
-                        }
+                        unit: 'day'
+
                     },
                     title: {
                         display: false
@@ -73,25 +75,22 @@
                         display: false
                     },
                     ticks: {
-                        source: 'auto'
+                        source: 'auto',
+                        autoSkip: false, // Ensure no ticks are skipped
+                        maxRotation: 0, // No rotation for tick labels
+                        minRotation: 0, // No rotation for tick labels
                     }
                 },
                 y: {
                     title: {
-                        display: false
+                        display: true
                     },
                     grid: {
                         display: false
                     },
                     ticks: {
                         callback: function(value, index, values) {
-                            // Return only even multiples of 20000 within the data range
-                            const minValue = Math.ceil(Math.min(...data) / 20000) * 20000;
-                            const maxValue = Math.ceil(Math.max(...data) / 20000) * 20000;
-                            if (index % 2 === 0 && value >= minValue && value <= maxValue) {
-                                return value.toLocaleString(); // Format numbers with commas
-                            }
-                            return ''; // Hide non-matching ticks
+
                         }
                     }
                 }
@@ -106,77 +105,98 @@
     });
 </script>
 
-<!-- <script>
-    // Retrieve the data passed from the server
-    const lineChartDates = JSON.parse('<%- JSON.stringify(lineChartDates) %>');
-    const lineChartPrices = JSON.parse('<%- JSON.stringify(lineChartPrices) %>');
 
-    // Combine dates and prices into a dataset
-    const lineChartData = lineChartDates.map((dateStr, index) => {
-        // Convert DD-MM-YYYY to YYYY-MM-DD
-        const [day, month, year] = dateStr.split('-');
-        const formattedDate = `${year}-${month}-${day}`;
-        return {
-            x: formattedDate, // Convert string to Date object and to ISO format
-            y: lineChartPrices[index]
-        };
-    });
+<script>
+    // Event listener for the select dropdown
+    $('#select-data-range').change(function() {
+        const selectedValue = $(this).val();
 
-    // Separate dates and prices for labels and data
-    const labels = lineChartData.map(data => data.x);
-    const data = lineChartData.map(data => data.y);
+        if (selectedValue) {
+            $.ajax({
+                url: '/analysisUserBySort', // Your route here
+                method: 'GET',
+                data: {
+                    range: selectedValue,
+                    userId: '<%= user._id %>'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        const lineChartDates = response.lineChartDates;
+                        const lineChartPrices = response.lineChartPrices;
 
-    // Get the canvas context
-    const ctx = document.getElementById('myChart').getContext('2d');
-
-    // Create a new line chart
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'User Expenses',
-                data: data,
-                borderColor: 'blue',
-                fill: false,
-                pointRadius: 5,
-                pointBackgroundColor: 'blue'
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                x: {
-                    type: 'time',
-                    time: {
-                        unit: 'day',
-                        tooltipFormat: 'DD-MM-YYYY',
-                        displayFormats: {
-                            day: 'DD-MM-YYYY'
-                        }
-                    },
-                    title: {
-                        display: true,
-                        text: 'Date'
-                    },
-                    ticks: {
-                        source: 'auto'
+                        // Update the chart with new data
+                        updateChart(lineChartDates, lineChartPrices);
+                    } else {
+                        // alert('Failed to retrieve data');
                     }
                 },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Price'
-                    },
-                    beginAtZero: true
+                error: function(err) {
+                    console.error('Error fetching data:', err);
                 }
-            },
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top'
-                }
-            }
+            });
         }
     });
-</script> -->
+
+    function updateChart(dates, prices) {
+        const lineChartData = dates.map((dateStr, index) => {
+            return {
+                x: new Date(dateStr),
+                y: prices[index]
+            };
+        });
+
+
+        lineChartData.sort((a, b) => a.x - b.x);
+        // Separate dates and prices for labels and data
+        const labels = lineChartData.map(data => {
+            return data.x.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: 'short' // Short month name (e.g., "Jun")
+                    // year: 'numeric'
+            });
+        });
+
+        const data = lineChartData.map(data => data.y);
+
+        // Update the chart
+        const ctx = document.getElementById('myChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'User Expenses',
+                    data: data,
+                    borderColor: 'blue',
+                    fill: false,
+                    pointRadius: 5,
+                    pointBackgroundColor: 'blue'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'day',
+                        },
+                        ticks: {
+                            source: 'auto',
+                            autoSkip: false, // Ensure no ticks are skipped
+                            maxRotation: 0, // No rotation for tick labels
+                            minRotation: 0, // No rotation for tick labels
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Price'
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+</script>

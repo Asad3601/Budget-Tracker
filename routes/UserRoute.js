@@ -24,5 +24,6 @@ router.get('/user_expense/delete/:id', UserController.UserExpenseDeleteById);
 router.get('/get_user_expenses', UserController.getUserExpenses);
 
 router.get('/analysis', UserController.UserAnalysis);
+router.get('/analysisUserBySort', UserController.AnalysisBySorting);
 
 module.exports = router;

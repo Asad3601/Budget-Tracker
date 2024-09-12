@@ -69,7 +69,7 @@
                                     <%= item.price %>
                                 </td>
                                 <td>
-                                    <%= item.date %>
+                                    <%= item.formattedDate %>
                                 </td>
                                 <td>
                                     <div class="progress">
@@ -137,7 +137,7 @@
                                 <tr>
                                     <td>${expense.title}</td>
                                     <td>${expense.price}</td>
-                                    <td>${expense.date}</td>
+                                    <td>${expense.formattedDate}</td>
                                     <td>
                                         <div class="progress">
                                             <div class="progress-bar bg-success" role="progressbar" style="width: ${expense.percentage}%" aria-valuenow="${expense.percentage}" aria-valuemin="0" aria-valuemax="100">

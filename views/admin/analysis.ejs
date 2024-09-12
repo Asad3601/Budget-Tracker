@@ -16,9 +16,9 @@
     </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
-</script> -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+</script>
 <script>
     // Retrieve the data passed from the server
     const lineChartDates = JSON.parse('<%- JSON.stringify(lineChartDates) %>');
@@ -26,24 +26,23 @@
 
     // Combine dates and prices into a dataset
     const lineChartData = lineChartDates.map((dateStr, index) => {
-        const [day, month, year] = dateStr.split('-');
-        const formattedDate = `${year}-${month}-${day}`;
         return {
-            x: new Date(formattedDate),
+            x: new Date(dateStr),
             y: lineChartPrices[index]
         };
     });
 
-    // Sort the data by date
-    lineChartData.sort((a, b) => a.x - b.x);
+    lineChartData.sort((a, b) => a.x - b.x); // Sort by date
 
     // Separate dates and prices for labels and data
     const labels = lineChartData.map(data => {
-        const day = String(data.x.getDate()).padStart(2, '0');
-        const month = String(data.x.getMonth() + 1).padStart(2, '0');
-        const year = data.x.getFullYear();
-        return `${day}-${month}-${year}`;
+        return data.x.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'short' // Short month name (e.g., "Jun")
+                // year: 'numeric'
+        });
     });
+
     const data = lineChartData.map(data => data.y);
 
     // Get the canvas context
@@ -70,10 +69,6 @@
                     type: 'time',
                     time: {
                         unit: 'day',
-                        tooltipFormat: 'DD-MM-YYYY',
-                        displayFormats: {
-                            day: 'DD-MM-YYYY'
-                        }
                     },
                     title: {
                         display: false
@@ -82,7 +77,10 @@
                         display: false
                     },
                     ticks: {
-                        source: 'auto'
+                        source: 'auto',
+                        autoSkip: false, // Ensure no ticks are skipped
+                        maxRotation: 0, // No rotation for tick labels
+                        minRotation: 0, // No rotation for tick labels
                     }
                 },
                 y: {
@@ -102,6 +100,7 @@
         }
     });
 </script>
+
 
 
 <script>
@@ -137,24 +136,23 @@
 
     function updateChart(dates, prices) {
         const lineChartData = dates.map((dateStr, index) => {
-            const [day, month, year] = dateStr.split('-');
-            const formattedDate = `${year}-${month}-${day}`;
             return {
-                x: new Date(formattedDate),
+                x: new Date(dateStr),
                 y: prices[index]
             };
         });
 
-        // Sort the data by date
-        lineChartData.sort((a, b) => a.x - b.x);
 
+        lineChartData.sort((a, b) => a.x - b.x);
         // Separate dates and prices for labels and data
         const labels = lineChartData.map(data => {
-            const day = String(data.x.getDate()).padStart(2, '0');
-            const month = String(data.x.getMonth() + 1).padStart(2, '0');
-            const year = data.x.getFullYear();
-            return `${day}-${month}-${year}`;
+            return data.x.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: 'short' // Short month name (e.g., "Jun")
+                    // year: 'numeric'
+            });
         });
+
         const data = lineChartData.map(data => data.y);
 
         // Update the chart
@@ -179,10 +177,12 @@
                         type: 'time',
                         time: {
                             unit: 'day',
-                            tooltipFormat: 'DD-MM-YYYY',
-                            displayFormats: {
-                                day: 'DD-MM-YYYY'
-                            }
+                        },
+                        ticks: {
+                            source: 'auto',
+                            autoSkip: false, // Ensure no ticks are skipped
+                            maxRotation: 0, // No rotation for tick labels
+                            minRotation: 0, // No rotation for tick labels
                         }
                     },
                     y: {

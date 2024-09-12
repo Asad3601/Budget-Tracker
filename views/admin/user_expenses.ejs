@@ -64,10 +64,13 @@
                                     <%= item.title %>
                                 </td>
                                 <td>
-                                    <%= item.date %>
+                                    <%= item.price %>
                                 </td>
+                                <td>
 
-                                <!-- Ensure formattedDate is correctly passed -->
+                                    <%= item.formattedDate %>
+                                </td>
+                                <!-- Date should now be in YYYY-MM-DD format -->
                                 <td>
                                     <div class="progress">
                                         <div class="progress-bar bg-success" role="progressbar" style="width: <%= item.percentage %>%;" aria-valuenow="<%= item.percentage %>" aria-valuemin="0" aria-valuemax="100">
@@ -79,6 +82,7 @@
                                 <td><a href="edit/<%= item._id %>" class="btn btn-primary">Edit</a></td>
                             </tr>
                             <% }) %>
+
                     </tbody>
 
                 </table>
@@ -134,7 +138,7 @@
                                 <tr>
                                     <td>${expense.title}</td>
                                     <td>${expense.price}</td>
-                                    <td>${expense.date}</td>
+                                    <td>${expense.formattedDate}</td>
                                     <td>
                                         <div class="progress">
                                             <div class="progress-bar bg-success" role="progressbar" style="width: ${expense.percentage}%" aria-valuenow="${expense.percentage}" aria-valuemin="0" aria-valuemax="100">
