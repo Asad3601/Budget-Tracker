@@ -184,7 +184,7 @@ exports.getUserExpensesByAdmin = async(req, res) => {
             percentage: ((expense.price / user.budget) * 100).toFixed(2),
             formattedDate: moment(expense.date).format('DD MMM YYYY')
         }));
-
+        console.log(expensesWithPercentage);
         // Respond with JSON data
         res.json({
             expenses: expensesWithPercentage,
@@ -267,10 +267,10 @@ exports.UserAnalysisBySorting = async(req, res) => {
         // Get the latest expense date as the `endDate`
         const latestExpense = userExpenses[userExpenses.length - 1]; // Last record in the sorted array
         const endDate = moment(latestExpense.date).endOf('day').toDate(); // Use the end of the day for the latest d
-        console.log(endDate);
+        // console.log(endDate);
         // Calculate `startDate` by subtracting the number of months
         const startDate = moment(endDate).subtract(months, 'months').startOf('month').toDate();
-        console.log(startDate);
+        // console.log(startDate);
         // Fetch expenses between `startDate` and `endDate`
         const expenses = await UserExpenses.find({
             user: userId,
@@ -314,3 +314,44 @@ exports.UserExpenseDeleteByAdmin = async(req, res) => {
         res.status(500).send('Server Error');
     }
 };
+
+exports.UpdateUserByAdmin = async(req, res) => {
+    let { first_name, last_name, user_id } = req.body;
+
+    // Use the user_id directly, not as an object
+    let user = await UserModel.findByIdAndUpdate(user_id, {
+        $set: { first_name, last_name }
+    }, {
+        new: true // Return the updated document
+    });
+
+    res.redirect('/users');
+};
+
+exports.UpdateUserExpenseByAdmin = async(req, res) => {
+    let { title, price, date, expense_id, user_id } = req.body;
+    let user = await UserModel.findById(user_id);
+    if (!user) {
+        return res.status(404).send('User not found');
+    }
+
+    let user_expenses = await UserExpenses.find({ user: user._id });
+    let totalExpenses = user_expenses.reduce((acc, expense) => acc + expense.price, 0);
+
+    // Check if adding the new expense will exceed the budget
+    if (totalExpenses + parseFloat(price) > user.budget) {
+        return res.status(400).send('Expenses exceed the budget!');
+    }
+    let expense = await UserExpenses.findByIdAndUpdate(expense_id, {
+        $set: {
+            title,
+            price,
+            date: new Date(date)
+        }
+    }, {
+        new: true
+    });
+    res.redirect(`/user_expense/${user_id}`);
+
+
+}

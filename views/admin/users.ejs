@@ -40,15 +40,71 @@
                                         <td>
                                             <%= item.budget %>
                                         </td>
-                                        <td><a href="/user_analysis/<%= item._id %>" class="btn btn-primary">View</a></td>
-                                        <td><a href="/edit/<%= item._id %>" class="btn btn-secondary">Edit</a></td>
-                                        <td><a href="/delete/<%= item._id %>" class="btn btn-danger">Delete</a></td>
+                                        <td>
+                                            <a href="/user_analysis/<%= item._id %>">
+                                                <i class="fas fa-chart-line"></i></a>
+                                        </td>
+                                        <td>
+                                            <a href="" data-bs-toggle="modal" data-bs-target="#edit_userAndUpdate_<%= item._id%>">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <div class="modal fade" id="edit_userAndUpdate_<%= item._id%>" tabindex="-1" aria-labelledby="edit_userAndUpdateLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h3 class="modal-title " id="update_user">Edit User</h3>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form action="/update_user" method="POST">
+                                                                <div class="mb-3">
+                                                                    <label for="f_name" class="form-label">First Name:</label>
+                                                                    <input class="form-control" type="text" name="first_name" value="<%= item.first_name%>" required>
+                                                                    <label for="l_name" class="form-label">Last Name:</label>
+                                                                    <input type="hidden" value="<%= item._id %>" name="user_id">
+                                                                    <input class="form-control" type="text" name="last_name" value="<%= item.last_name%>" required>
+                                                                </div>
+                                                                <button type="submit" class="btn btn-primary">Update</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a href="/delete/<%= item._id %>">
+                                                <i class="fas fa-trash" style="color: red;"></i></a>
+                                        </td>
                                     </tr>
                                     <% }) %>
                                         <% } %>
 
                     </tbody>
                 </table>
+                <div class="modal fade" id="edit_userAndUpdate" tabindex="-1" aria-labelledby="changeProfilePictureModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="update_user">Edit User</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/update_user" method="POST">
+                                    <div class="mb-3">
+                                        <label for="title" class="form-label">First Name:</label>
+                                        <input class="form-control" type="text" name="first_name" required>
+                                        <label for="price" class="form-label">Expense Price:</label>
+                                        <input class="form-control" type="number" name="price" required>
+                                        <label for="date" class="form-label">Date:</label>
+                                        <input class="form-control" type="date" name="date" required>
+                                        <input class="form-control" type="hidden" value="<%= user._id %>" name="user_id">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

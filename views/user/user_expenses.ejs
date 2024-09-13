@@ -1,8 +1,12 @@
 <div class="container-xl">
     <div class="row">
         <div class="col-xl-12">
-            <div class="header-container" style="margin-left: 130px;">
-                <h3>Your Expenses</h3>
+            <div class="expenses-container" style="margin-left: 130px;">
+                <h2>Your Expenses</h2>
+
+                <button id="addExpenseBtn" data-bs-toggle="modal" data-bs-target="#changeProfilePictureModal" <% if (isOverBudget) { %> disabled <% } %>>
+                        <i class="fa fa-plus fa-2x" style="color: steelblue; margin-right: 140px;"></i>
+                    </button>
             </div>
 
             <!-- Filter Bar -->
@@ -78,17 +82,49 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td><a href="edit/<%= item._id %>" class="btn btn-primary">Edit</a></td>
-                                <td><a href="user_expense/delete/<%= item._id %>" class="btn btn-danger">Delete</a></td>
+                                <td>
+                                    <a href="" data-bs-toggle="modal" data-bs-target="#update_user_expense_<%= item._id %>">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <div class="modal fade" id="update_user_expense_<%= item._id %>" tabindex="-1" aria-labelledby="update_user_expenseLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="edituserexpense">Edit Expense</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form action="/update_expense_user" method="POST">
+                                                        <div class="mb-3">
+                                                            <label for="title" class="form-label">Expense Title:</label>
+                                                            <input class="form-control" type="text" name="title" required value="<%= item.title %>">
+                                                            <label for="price" class="form-label">Expense Price:</label>
+                                                            <input class="form-control" type="number" name="price" required value="<%= item.price %>">
+                                                            <label for="date" class="form-label">Date:</label>
+                                                            <!-- Correct date format for the input field -->
+
+                                                            <input class="form-control" type="date" name="date" required value="<%= item.date.toISOString().substring(0, 10) %>">
+                                                            <input type="hidden" value="<%= item._id %>" name="expense_id">
+                                                        </div>
+                                                        <button type="submit" class="btn btn-primary">Update</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a href="user_expense/delete/<%= item._id %>">
+                                        <i class="fa fa-trash-alt" style="color: red;"></i>
+                                    </a>
+                                </td>
                             </tr>
                             <% }) %>
                     </tbody>
                 </table>
             </div>
 
-            <button id="addExpenseBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#changeProfilePictureModal" <% if (isOverBudget) { %> disabled <% } %>>
-                Add Expense
-            </button>
+
 
             <!-- Total Budget and Expenses Summary -->
             <div class="d-flex justify-content-center mt-4">
@@ -145,8 +181,38 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td><a href="edit/${expense._id}" class="btn btn-primary">Edit</a></td>
-                                    <td><a href="user_expense/delete/${expense._id}" class="btn btn-danger">Delete</a></td>
+
+                                    <td>
+                                        <a href="" data-bs-toggle="modal" data-bs-target="#update_user_expense_${expense._id}">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <div class="modal fade" id="update_user_expense_${expense._id}" tabindex="-1" aria-labelledby="update_user_expenseLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="edituserexpense">Edit User Expense</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form action="/update_expense_user" method="POST">
+                                                            <div class="mb-3">
+                                                                <label for="title" class="form-label">Expense Title:</label>
+                                                                <input class="form-control" type="text" name="title" required value="${expense.title}">
+                                                                <label for="price" class="form-label">Expense Price:</label>
+                                                                <input class="form-control" type="number" name="price" required value="${expense.price}">
+                                                                <label for="date" class="form-label">Date:</label>
+                                                                <input class="form-control" type="date" value="${new Date(expense.date).toISOString().substring(0, 10)}"   name="date">
+                                                                <input type="hidden" value="${expense._id}" name="expense_id">
+                                                            </div>
+                                                            <button type="submit" class="btn btn-primary">Update</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><a href="user_expense/delete/${expense._id}">
+                                        <i class="fa fa-trash-alt" style="color: red;"></i></a></td>
                                 </tr>
                             `);
                         });

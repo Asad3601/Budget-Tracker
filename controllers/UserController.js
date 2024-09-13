@@ -59,8 +59,6 @@ exports.RegisterUser = [
 
         try {
             const { first_name, last_name, email, password, budget } = req.body;
-
-            // Create a new user
             const newUser = new UserModel({
                 first_name,
                 last_name,
@@ -68,6 +66,12 @@ exports.RegisterUser = [
                 password,
                 budget // Make sure to hash the password before saving
             });
+            // Create a new user
+            if (req.user && req.user.role === 'admin') {
+                // Save the user
+                await newUser.save();
+                return res.redirect('/users');
+            }
 
             // Save the user
             await newUser.save();
@@ -580,3 +584,32 @@ exports.UserExpenseDeleteById = async(req, res) => {
     await UserExpenses.findByIdAndDelete({ _id: id });
     res.redirect('/user_expenses');
 };
+
+exports.UpdateUserExpense = async(req, res) => {
+    let user_id = req.user._id;
+    let { title, price, date, expense_id } = req.body;
+    let user = await UserModel.findById(user_id);
+    if (!user) {
+        return res.status(404).send('User not found');
+    }
+
+    let user_expenses = await UserExpenses.find({ user: user._id });
+    let totalExpenses = user_expenses.reduce((acc, expense) => acc + expense.price, 0);
+
+    // Check if adding the new expense will exceed the budget
+    if (totalExpenses + parseFloat(price) > user.budget) {
+        return res.status(400).send('Expenses exceed the budget!');
+    }
+    let expense = await UserExpenses.findByIdAndUpdate(expense_id, {
+        $set: {
+            title,
+            price,
+            date: new Date(date)
+        }
+    }, {
+        new: true
+    });
+    res.redirect('/user_expenses');
+
+
+}

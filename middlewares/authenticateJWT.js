@@ -4,7 +4,9 @@ const UserModel = require('../models/User'); // Adjust the path to your UserMode
 const authenticateJWT = async(req, res, next) => {
     const token = req.cookies.jwt || req.headers.authorization; // Check both cookie and header
 
-    if (!token) { return next(); } // If no token, continue without attaching user
+    if (!token) {
+        return next();
+    } // If no token, continue without attaching user
 
     jwt.verify(token, process.env.JWT_SECRET, async(err, decoded) => {
         if (err) return res.redirect('/');
