@@ -272,20 +272,6 @@
                                         <label class="small mb-1" for="inputAbout">About Me</label>
                                         <textarea rows="4" class="form-control" id="inputAbout" name="about"><%= user.personalDetails ? user.personalDetails.about : '' %></textarea>
                                     </div>
-
-                                    <!-- Form Row-->
-
-                                    <!-- Form Group (Full Name)-->
-                                    <div class="mb-3">
-
-                                        <label class="small mb-1" for="inputFatherName">Father Name:</label>
-                                        <input class="form-control" id="inputFatherName" type="text" value="<%= user.personalDetails ? user.personalDetails.father_name : '' %>" name="father_name">
-
-
-                                        <input class="form-control" id="userId" type="hidden" value="<%= user._id %>" name="user_id">
-                                    </div>
-
-
                                     <!-- Form Row-->
                                     <div class="row gx-3 mb-3">
                                         <!-- Form Group (First Name)-->
@@ -300,7 +286,18 @@
                                     </div>
 
                                     <!-- Form Group (Email)-->
+                                    <div class="mb-3 row gx-3">
+                                        <div class="col-md-6">
+                                            <label class="small mb-1" for="inputFatherName">Father Name:</label>
+                                            <input class="form-control" id="inputFatherName" type="text" value="<%= user.personalDetails ? user.personalDetails.father_name : '' %>" name="father_name">
 
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="small mb-1" for="inputWebsite">Website: (Optional)</label>
+                                            <input class="form-control" id="inputWebsite" type="url" name="website" value="<%= user.personalDetails ? user.personalDetails.website : '' %>">
+                                        </div>
+                                    </div>
+                                    <input class="form-control" id="userId" type="hidden" value="<%= user._id %>" name="user_id">
 
                                     <!-- Form Row -->
                                     <div class="row gx-3 mb-3">
