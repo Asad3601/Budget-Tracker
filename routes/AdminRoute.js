@@ -15,6 +15,7 @@ router.get('/analysisBySort', AuthMiddleware.CheckAdmin, AdminController.UserAna
 router.get('/expense_delete/:id', AuthMiddleware.CheckAdmin, AdminController.UserExpenseDeleteByAdmin);
 router.post('/update_user', AuthMiddleware.CheckAdmin, AdminController.UpdateUserByAdmin);
 router.post('/update_expenseByAdmin', AuthMiddleware.CheckAdmin, AdminController.UpdateUserExpenseByAdmin);
+router.post('/store-notification', AdminController.storeNotification);
 
 
 

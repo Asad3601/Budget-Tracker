@@ -26,5 +26,6 @@ router.get('/get_user_expenses', UserController.getUserExpenses);
 router.get('/analysis', UserController.UserAnalysis);
 router.get('/analysisUserBySort', UserController.AnalysisBySorting);
 router.post('/update_expense_user', UserController.UpdateUserExpense);
+router.post('/notifications/mark-all-read', UserController.NotificationsMarksAsRead);
 
 module.exports = router;

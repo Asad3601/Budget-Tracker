@@ -1,8 +1,76 @@
 const moment = require('moment');
 const UserModel = require('../models/User');
 const UserExpenses = require('../models/UserExpenses');
+const NotificationModel = require('../models/NotificationModel');
 
 
+const { getIo } = require('../socket');
+
+exports.AddUserExpenseByAdmin = async(req, res) => {
+    const { title, price, date, user_id } = req.body;
+
+    try {
+        let user = await UserModel.findById(user_id);
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        let user_expenses = await UserExpenses.find({ user: user._id });
+        let totalExpenses = user_expenses.reduce((acc, expense) => acc + expense.price, 0);
+
+        // Check if adding the new expense will exceed the budget
+        if (totalExpenses + parseFloat(price) > user.budget) {
+            return res.status(400).send('Expenses exceed the budget!');
+        }
+
+        const user_expense = new UserExpenses({
+            title,
+            price,
+            date: new Date(date), // Store only the date part
+            user: user_id
+        });
+
+        await user_expense.save();
+
+        const io = getIo();
+        io.to(user_id).emit('expenseAdded', {
+            message: 'A new expense was added by admin',
+            title,
+            price,
+            date
+        });
+
+        res.redirect(`/user_expense/${user_id}`); // Redirect to the user expenses page
+    } catch (error) {
+        console.error('Error occurred during user expense creation:', error);
+        res.status(500).send('Server Error');
+    }
+};
+exports.storeNotification = async(req, res) => {
+    const { user_id, message } = req.body;
+
+    try {
+        // Create a new notification
+        const newNotification = new NotificationModel({
+            user: user_id,
+            message: message, // Store the entire message
+        });
+
+        // Save the notification to the database
+        await newNotification.save();
+
+        // Send a success response back to the client
+        res.json({
+            success: true
+        });
+    } catch (error) {
+        console.error('Error storing notification:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error, could not store notification'
+        });
+    }
+};
 
 exports.AllUsers = async(req, res) => {
     try {
@@ -76,42 +144,6 @@ exports.User_Expense = async(req, res) => {
 
 
 // Route handler to add expenses
-exports.AddUserExpenseByAdmin = async(req, res) => {
-    const { title, price, date, user_id } = req.body;
-
-    try {
-        let user = await UserModel.findById(user_id);
-        if (!user) {
-            return res.status(404).send('User not found');
-        }
-
-        let user_expenses = await UserExpenses.find({ user: user._id });
-        let totalExpenses = user_expenses.reduce((acc, expense) => acc + expense.price, 0);
-
-        // Check if adding the new expense will exceed the budget
-        if (totalExpenses + parseFloat(price) > user.budget) {
-            return res.status(400).send('Expenses exceed the budget!');
-        }
-
-        // Parse and adjust the date to discard the time part
-        // Set time to midnight
-
-        // If everything is okay, add the expense
-        const user_expense = new UserExpenses({
-            title,
-            price,
-            date: new Date(date), // Store only the date part
-            user: user_id
-        });
-
-        await user_expense.save();
-
-        res.redirect(`/user_expense/${user_id}`); // Redirect to the user expenses page
-    } catch (error) {
-        console.error('Error occurred during user expense creation:', error);
-        res.status(500).send('Server Error');
-    }
-};
 
 
 exports.getUserExpensesByAdmin = async(req, res) => {
@@ -184,7 +216,7 @@ exports.getUserExpensesByAdmin = async(req, res) => {
             percentage: ((expense.price / user.budget) * 100).toFixed(2),
             formattedDate: moment(expense.date).format('DD MMM YYYY')
         }));
-        console.log(expensesWithPercentage);
+        // console.log(expensesWithPercentage);
         // Respond with JSON data
         res.json({
             expenses: expensesWithPercentage,
@@ -308,7 +340,7 @@ exports.UserExpenseDeleteByAdmin = async(req, res) => {
         await UserExpenses.findByIdAndDelete(id);
 
         // Step 4: Redirect using the user value
-        res.redirect('/user_expense');
+        res.redirect('/users');
     } catch (error) {
         console.error('Error deleting expense:', error);
         res.status(500).send('Server Error');

@@ -2,12 +2,15 @@ const UserModel = require('../models/User');
 const OTPModel = require('../models/OTPModel');
 const PersonalDetails = require('../models/PersonalDetails');
 const UserExpenses = require('../models/UserExpenses');
+
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const multer = require('multer');
 const moment = require('moment');
+const socket = require('socket.io');
 const otpgenerator = require('otp-generator');
 const { body, validationResult } = require('express-validator');
+const NotificationModel = require('../models/NotificationModel');
 
 
 exports.UserRegisterForm = (req, res) => {
@@ -247,8 +250,10 @@ exports.PasswordReset = [
 
 
 exports.UserProfile = async(req, res) => {
+    const notifications = await NotificationModel.find({ user: req.user._id, marksAsRead: false }).sort({ date: -1 });
     res.render('user/profile', {
         user: req.user,
+        notifications
     })
 }
 
@@ -296,8 +301,11 @@ exports.PersonalDetails = async(req, res) => {
 };
 
 exports.EditProfileForm = async(req, res) => {
+    const notifications = await NotificationModel.find({ user: req.user._id, marksAsRead: false }).sort({ date: -1 });
     res.render('user/edit-profile', {
-        user: req.user
+        user: req.user,
+        notifications
+
     });
 }
 
@@ -389,7 +397,7 @@ exports.UserExpenses = async(req, res) => {
 
         // Calculate total expenses
         let totalExpenses = user_expenses.reduce((acc, expense) => acc + expense.price, 0);
-
+        const notifications = await NotificationModel.find({ user: req.user._id, marksAsRead: false }).sort({ date: -1 });
         // Prepare expenses with percentage used for each expense
         let expensesWithPercentage = user_expenses.map(expense => ({
             ...expense._doc,
@@ -401,7 +409,9 @@ exports.UserExpenses = async(req, res) => {
         res.render('user_index', {
             title: 'User Expenses',
             user_expenses: expensesWithPercentage,
-            user: req.user,
+            user,
+            userData: req.user,
+            notifications,
             MainView: 'user/user_expenses',
             totalExpenses,
             budget: user.budget,
@@ -511,7 +521,7 @@ exports.UserAnalysis = async(req, res) => {
 
         // Convert DD-MM-YYYY to YYYY-MM-DD format
 
-
+        const notifications = await NotificationModel.find({ user: req.user._id, marksAsRead: false }).sort({ date: -1 });
         // Prepare data arrays for line chart
         const dates = [];
         const prices = [];
@@ -527,7 +537,9 @@ exports.UserAnalysis = async(req, res) => {
 
         // Render the view and pass the line chart data
         res.render('user_index', {
-            user: req.user,
+            user,
+            userData: req.user,
+            notifications,
             title: 'Analysis',
             MainView: 'user/user_analysis',
             lineChartDates: dates, // Convert dates array to JSON string
@@ -613,3 +625,17 @@ exports.UpdateUserExpense = async(req, res) => {
 
 
 }
+
+exports.NotificationsMarksAsRead = async(req, res) => {
+    try {
+        const userId = req.user._id; // Assuming you're storing the user's ID in the session
+
+        // Update all notifications for the user to mark them as read
+        await NotificationModel.updateMany({ user: userId }, { marksAsRead: true });
+
+        res.json({ success: true, message: 'All notifications marked as read' });
+    } catch (err) {
+        console.error('Error marking notifications as read:', err);
+        res.status(500).json({ success: false, message: 'An error occurred' });
+    }
+};

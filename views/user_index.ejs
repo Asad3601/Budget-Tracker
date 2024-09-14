@@ -130,6 +130,44 @@
         });
     </script>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        // Parse user data
+        const userData = JSON.parse('<%- JSON.stringify(userData) %>');
+        const user_id = userData._id;
+        const username = userData.first_name; // Assuming the user's first name is stored under 'firstName'
+
+        // Join the room for this specific user
+        socket.emit('join', user_id);
+
+        // Listen for the 'expenseAdded' event
+        socket.on('expenseAdded', (data) => {
+
+            alert(`Hello \n ${data.message}, with (Title): ${data.title}`);
+            const notificationMessage = `Hello \n ${data.message}, with (Title): ${data.title}`;
+            $.ajax({
+                url: '/store-notification',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    user_id: user_id,
+                    message: notificationMessage
+                        // Pass the formatted date
+                }),
+                success: function(response) {
+                    location.reload();
+                },
+                error: function(err) {
+                    console.error('Error storing notification:', err);
+                }
+            });
+
+        });
+    </script>
+
 
 </body>
 
